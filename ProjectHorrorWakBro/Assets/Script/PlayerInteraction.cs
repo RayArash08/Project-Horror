@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerInteraction : MonoBehaviour
 {
-    public float playerReach = 3f;
+    public float playerReach = 4f;
     Interactable currentInteractable;
 
     // Update is called once per frame
@@ -19,8 +19,8 @@ public class PlayerInteraction : MonoBehaviour
 
     void CheckInteraction() 
     {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-        Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
         if (Physics.Raycast(ray, out hit, playerReach))
         {
             if(hit.collider.tag == "Interactable") //if looking at an interactable object
