@@ -1,55 +1,69 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerInteraction : MonoBehaviour
 {
-    public float playerReach = 4f;
+    public float playerReach = 1f;
     Interactable currentInteractable;
+    public Inventory playerInventory;
 
-    // Update is called once per frame
     void Update()
     {
         CheckInteraction();
-        if (Input.GetKeyDown(KeyCode.F) && currentInteractable != null)
+
+        if (Input.GetKeyDown(KeyCode.E) && currentInteractable != null)
         {
-            currentInteractable.Interact();
-        } 
+            PickupItem pickup = currentInteractable.GetComponent<PickupItem>();
+            if (pickup != null)
+            {
+                pickup.Pickup(playerInventory); // Pick up the item
+            }
+            else
+            {
+                currentInteractable.Interact(); // Normal interaction
+            }
+        }
     }
 
-    void CheckInteraction() 
+    void CheckInteraction()
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
+
+        // 🔥 CHANGED: Use screen center ray based on camera view
+        Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2f, Screen.height / 2f));
+
         if (Physics.Raycast(ray, out hit, playerReach))
         {
-            if(hit.collider.tag == "Interactable") //if looking at an interactable object
+            if (hit.collider.CompareTag("Interactable"))
             {
                 Interactable newInteractable = hit.collider.GetComponent<Interactable>();
-                // if there is a current interactable and is not the new Interactable
-                if (currentInteractable && newInteractable != currentInteractable) 
+
+                if (currentInteractable && newInteractable != currentInteractable)
                 {
                     currentInteractable.DisableOutline();
                 }
+
                 if (newInteractable.enabled)
                 {
-                    SetNewCurrentInteractable (newInteractable);
+                    SetNewCurrentInteractable(newInteractable);
                 }
-                else // if new interactable is not enable
+                else
                 {
                     DisableCurrentInteractable();
                 }
             }
-            else //if not an interactable
+            else
             {
                 DisableCurrentInteractable();
             }
         }
-        else // if not in the reach
+        else
         {
             DisableCurrentInteractable();
         }
     }
+
     void SetNewCurrentInteractable(Interactable newInteractable)
     {
         currentInteractable = newInteractable;
@@ -58,10 +72,10 @@ public class PlayerInteraction : MonoBehaviour
 
     void DisableCurrentInteractable()
     {
-        if(currentInteractable)
+        if (currentInteractable)
         {
             currentInteractable.DisableOutline();
-            currentInteractable=null;
+            currentInteractable = null;
         }
     }
 }

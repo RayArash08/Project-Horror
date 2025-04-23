@@ -14,7 +14,8 @@ public class Interactable : MonoBehaviour
     void Start()
     {
         outline = GetComponent<Outline>();
-        DisableOutline();
+        DisableOutline(); 
+
     }
 
     public void Interact()
@@ -27,9 +28,10 @@ public class Interactable : MonoBehaviour
         outline.enabled = false;
     }
 
-    public void EnableOutline() 
-    {
-        outline.enabled = true;
+    public void EnableOutline()
+    { 
+        outline.enabled = true; 
     }
 
+    
 }
